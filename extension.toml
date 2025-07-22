@@ -1,0 +1,10 @@
+id = "synthwave84"
+name = "Synthwave '84"
+description = "A vibrant, retro-inspired theme based on the synthwave aesthetic of the 1980s"
+version = "0.1.0"
+schema_version = 1
+authors = ["DROO"]
+repository = "https://github.com/droo/synthwave84-zed"
+
+[capabilities]
+themes = ["themes/synthwave84.json"]
