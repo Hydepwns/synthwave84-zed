@@ -4,8 +4,13 @@ A vibrant, retro-inspired theme for the Zed editor based on the synthwave aesthe
 Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Timecop 1983, and The Midnight.
 
 ![Theme Preview](preview_synthwave84.png)
-
 ![Theme Preview](preview_synthwave84-1.png)
+
+> TODOs: (non-critical)
+>
+> Final verification of theme consistency on Linux and NixOS
+> Update theming to support LLM-specific fonts for suggestions.
+> Add Monaspace variable fonts, not just Monaspace argon
 
 ## Features
 
@@ -34,7 +39,7 @@ Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Ti
 
 ```json
 {
-  "theme": "Synthwave '84"
+  "theme": "synthwave84"
 }
 ```
 
