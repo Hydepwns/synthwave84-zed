@@ -3,7 +3,9 @@
 A vibrant, retro-inspired theme for the Zed editor based on the synthwave aesthetic of the 1980s.
 Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Timecop 1983, and The Midnight.
 
-TODO ![Theme Preview](preview.png)
+![Theme Preview](preview_synthwave84.png)
+
+![Theme Preview](preview_synthwave84-1.png)
 
 ## Features
 
