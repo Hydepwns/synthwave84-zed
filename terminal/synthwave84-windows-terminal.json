@@ -1,0 +1,23 @@
+{
+  "name": "Synthwave84",
+  "background": "#241B2F",
+  "foreground": "#FFFFFF",
+  "cursorColor": "#FF7EDB",
+  "selectionBackground": "#FF7EDB40",
+  "black": "#241B2F",
+  "red": "#FE4450",
+  "green": "#72F1B8",
+  "yellow": "#FEDE5D",
+  "blue": "#03EDF9",
+  "purple": "#FF7EDB",
+  "cyan": "#36F9F6",
+  "white": "#FFFFFF",
+  "brightBlack": "#495495",
+  "brightRed": "#FE4450",
+  "brightGreen": "#72F1B8",
+  "brightYellow": "#FEDE5D",
+  "brightBlue": "#03EDF9",
+  "brightPurple": "#FF7EDB",
+  "brightCyan": "#36F9F6",
+  "brightWhite": "#FFFFFF"
+}
