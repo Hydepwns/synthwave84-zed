@@ -23,4 +23,7 @@ Thumbs.db
 *~
 
 # Logs
-*.log 
+*.log
+
+# Screenshots for visual regression (generated)
+screenshots/

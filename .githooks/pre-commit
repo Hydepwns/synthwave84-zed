@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -e
+
+# Regenerate theme if source files changed
+SOURCES="src/base.json palette.json"
+THEME="themes/synthwave84.json"
+
+changed_sources=$(git diff --cached --name-only -- $SOURCES 2>/dev/null || true)
+
+if [ -n "$changed_sources" ]; then
+    echo "Source files changed, regenerating theme..."
+    python3 scripts/theme.py generate
+
+    # Check if theme changed
+    if ! git diff --quiet -- "$THEME"; then
+        echo "Theme updated, staging changes..."
+        git add "$THEME"
+    fi
+fi
+
+# Validate theme
+echo "Validating theme..."
+python3 scripts/theme.py validate || {
+    echo "Validation failed!"
+    exit 1
+}
+
+echo "Pre-commit checks passed."

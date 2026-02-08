@@ -3,11 +3,11 @@
 A vibrant, retro-inspired theme for the Zed editor based on the synthwave aesthetic of the 1980s.
 Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Timecop 1983, and The Midnight.
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Install from Zed Extensions** (Recommended)
-   - Open Zed → Command Palette (`Cmd/Ctrl + Shift + P`)
-   - Search "zed: Extensions" → Search "Synthwave 84" → Install
+   - Open Zed > Command Palette (`Cmd/Ctrl + Shift + P`)
+   - Search "zed: Extensions" > Search "Synthwave 84" > Install
 
 2. **Apply the theme**
    - Open Settings (`Cmd/Ctrl + ,`)
@@ -19,7 +19,8 @@ Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Ti
    - `"Synthwave84 High Contrast"` - Enhanced visibility
 
 ![Theme Preview](preview_synthwave84.png)
-![Theme Preview](preview_synthwave84-1.png)
+![Theme Preview](preview_high_contrast.png)
+![Theme Preview](preview_soft.png)
 
 ## Features
 
@@ -27,68 +28,17 @@ Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Ti
 - Neon-like syntax highlighting with vibrant purples, pinks, and cyans
 - Carefully crafted contrast for comfortable long coding sessions
 - Retro-futuristic UI elements
-- Enhanced AI/LLM support with custom theming for predictive text and inline completions
-- Comprehensive language-specific optimizations for 15+ languages
-- Full Monaspace variable font family support
-- **Three theme variants:**
+- AI/LLM support for predictive text and inline completions
+- Language-specific optimizations for 15+ languages
+- Monaspace variable font support
+- Three theme variants:
   - **Synthwave84** - The classic vibrant synthwave experience
   - **Synthwave84 Soft** - Lower contrast for extended coding sessions
   - **Synthwave84 High Contrast** - Enhanced visibility with more vibrant colors
 
-### Supported Terminals
+### Terminal Support
 
-- **Alacritty**: Copy `terminal/synthwave84.toml` to your config
-- **Wezterm**: Import the TOML configuration  
-- **Kitty**: Copy `terminal/synthwave84.conf` to `~/.config/kitty/themes/`
-- **Windows Terminal**: Import `terminal/synthwave84-windows-terminal.json`
-- **iTerm2/Terminal.app**: Use JSON format with conversion tools
-- **VS Code/Hyper**: Use `terminal/synthwave84.json`
-- **Zed Built-in Terminal**: Automatically uses theme colors
-
-For a complete synthwave experience, use the included terminal color schemes:
-
-#### Quick Install (Linux/macOS)
-
-```bash
-# Automatic installation for detected terminals
-./install-terminal.sh
-```
-
-#### Terminal Configuration Files
-
-- **TOML format**: `terminal/synthwave84.toml` (Alacritty, Wezterm)
-- **JSON format**: `terminal/synthwave84.json` (VS Code terminal, Hyper)
-- **Kitty format**: `terminal/synthwave84.conf` (Kitty terminal)
-- **Windows Terminal**: `terminal/synthwave84-windows-terminal.json`
-
-#### Manual Setup Examples
-
-**Kitty:**
-```bash
-mkdir -p ~/.config/kitty/themes
-cp terminal/synthwave84.conf ~/.config/kitty/themes/
-echo "include themes/synthwave84.conf" >> ~/.config/kitty/kitty.conf
-kitty @ set-colors ~/.config/kitty/themes/synthwave84.conf
-```
-
-**Windows Terminal:**
-1. Open Windows Terminal → Settings → Color schemes
-2. Click "Add new" → Import from file
-3. Select `terminal/synthwave84-windows-terminal.json`
-4. Apply to your profile
-
-### Quick Shell Setup
-
-```bash
-# Add to your shell profile (.bashrc, .zshrc, etc.)
-export LS_COLORS="di=1;36:fi=0;37:ln=1;35:ex=1;32:*.rs=0;33:*.js=0;33:*.ts=0;36:*.py=0;32"
-
-# Git colors to match theme
-git config --global color.status.changed "yellow"
-git config --global color.status.untracked "cyan"
-git config --global color.status.added "green"
-git config --global color.branch.current "magenta bold"
-```
+The Zed built-in terminal automatically inherits the Synthwave '84 colors. For external terminals, check out the [Synthwave '84 Terminal](https://github.com/hydepwns/synthwave84-terminal) repository for matching color schemes.
 
 ## Installation
 
@@ -114,12 +64,6 @@ git config --global color.branch.current "magenta bold"
 }
 ```
 
-To use a different variant, change the theme name:
-
-- `"theme": "Synthwave84"` - Classic variant
-- `"theme": "Synthwave84 Soft"` - Soft variant for extended use
-- `"theme": "Synthwave84 High Contrast"` - High contrast variant
-
 ## Recommended Font Configuration
 
 ### Monaspace Variable Fonts
@@ -140,16 +84,16 @@ Add to your Zed settings.json:
 {
   "buffer_font_family": "Monaspace Neon",
   "buffer_font_features": {
-    "calt": true,    // Contextual alternates (texture healing)
-    "liga": true,    // Ligatures
-    "ss01": true,    // Style set 1 (varies by font)
-    "ss02": true,    // Style set 2 (varies by font)
-    "ss03": true,    // Style set 3 (varies by font)
-    "ss04": true,    // Style set 4 (varies by font)
-    "ss05": true,    // Style set 5 (varies by font)
-    "ss06": true,    // Style set 6 (varies by font)
-    "ss07": true,    // Style set 7 (varies by font)
-    "ss08": true     // Style set 8 (varies by font)
+    "calt": true, // Contextual alternates (texture healing)
+    "liga": true, // Ligatures
+    "ss01": true, // Style set 1 (varies by font)
+    "ss02": true, // Style set 2 (varies by font)
+    "ss03": true, // Style set 3 (varies by font)
+    "ss04": true, // Style set 4 (varies by font)
+    "ss05": true, // Style set 5 (varies by font)
+    "ss06": true, // Style set 6 (varies by font)
+    "ss07": true, // Style set 7 (varies by font)
+    "ss08": true // Style set 8 (varies by font)
   },
   "buffer_font_weight": 400,
   "buffer_font_size": 14,
@@ -164,10 +108,10 @@ You can customize the font appearance using variable axes:
 
 ```json
 {
-  "buffer_font_weight": 300,    // 200-800 (Light to Extra Bold)
+  "buffer_font_weight": 300, // 200-800 (Light to Extra Bold)
   "buffer_font_features": {
-    "wdth": 100,                // Width: 100-125 (Normal to Wide)
-    "slnt": -12                 // Slant: 0 to -12 (Upright to Italic)
+    "wdth": 100, // Width: 100-125 (Normal to Wide)
+    "slnt": -12 // Slant: 0 to -12 (Upright to Italic)
   }
 }
 ```
@@ -188,18 +132,18 @@ If you prefer other fonts, the theme also works well with:
 - Cascadia Code
 - Victor Mono (for italic emphasis)
 
-## 🎨 Color Palette
+## Color Palette
 
 See [COLORS.md](COLORS.md) for the complete color palette reference.
 
-## ♿ Accessibility
+## Accessibility
 
 - **WCAG AA Compliant**: All text meets contrast ratio requirements (4.5:1+)
 - **High Contrast Variant**: Enhanced visibility with 7:1+ contrast ratios
 - **Color Blind Friendly**: Tested with deuteranopia and protanopia simulators
 - **Reduced Motion**: No animations, suitable for vestibular sensitivity
 
-## 🛠️ Troubleshooting
+## Troubleshooting
 
 ### Theme not appearing in Zed
 
@@ -224,6 +168,18 @@ See [COLORS.md](COLORS.md) for the complete color palette reference.
 - Install [Monaspace fonts](https://monaspace.githubnext.com/) for optimal experience
 - Enable font features in settings: `"liga": true, "calt": true`
 - Clear font cache if using custom fonts: `fc-cache -f -v` (Linux)
+
+## Development
+
+Theme is generated from source files:
+
+```bash
+make generate   # Build theme from src/base.json + palette.json
+make validate   # Check WCAG contrast ratios
+make check      # Verify theme matches source
+```
+
+See [CLAUDE.md](CLAUDE.md) for architecture details.
 
 ## License
 

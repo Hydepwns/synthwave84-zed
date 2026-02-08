@@ -1,10 +1,10 @@
 id = "synthwave84"
 name = "Synthwave84"
 description = "A vibrant, retro-inspired theme based on the synthwave aesthetic of the 1980s. Includes Classic, Soft, and High Contrast variants."
-version = "0.3.0"
+version = "0.2.0"
 schema_version = 1
 authors = ["DROO <drew@axol.io>"]
 repository = "https://github.com/hydepwns/synthwave84-zed"
 
-[capabilities]
+[theme]
 themes = ["themes/synthwave84.json"]

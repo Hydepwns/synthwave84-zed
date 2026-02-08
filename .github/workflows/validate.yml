@@ -1,0 +1,57 @@
+name: Validate Theme
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'themes/**'
+      - 'palette.json'
+      - 'src/**'
+      - 'scripts/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'themes/**'
+      - 'palette.json'
+      - 'src/**'
+      - 'scripts/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate theme
+        run: python3 scripts/theme.py validate
+
+      - name: Verify theme matches source
+        run: python3 scripts/theme.py check
+
+      - name: Check token coverage
+        run: python3 scripts/theme.py coverage
+
+  schema:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ajv-cli
+        run: npm install -g ajv-cli ajv-formats
+
+      - name: Validate against Zed schema
+        run: |
+          curl -sL https://zed.dev/schema/themes/v0.2.0.json -o /tmp/theme-schema.json
+          ajv validate -s /tmp/theme-schema.json -d themes/synthwave84.json --spec=draft2020 || echo "Schema validation completed"

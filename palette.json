@@ -1,0 +1,93 @@
+{
+  "$comment": "Centralized color palette for Synthwave84 theme variants",
+  "base": {
+    "background": {
+      "deep": "#241b2f",
+      "surface": "#262335",
+      "elevated": "#2a2139",
+      "active": "#463465"
+    },
+    "foreground": {
+      "primary": "#ffffff",
+      "muted": "#ffffff80",
+      "placeholder": "#ffffff40"
+    },
+    "border": {
+      "default": "#495495",
+      "focused": "#880088",
+      "transparent": "#00000000"
+    }
+  },
+  "syntax": {
+    "$comment": "Base colors for Classic variant. Soft/High Contrast derive from these.",
+    "function": "#36f9f6",
+    "keyword": "#fede5d",
+    "string": "#ff8b39",
+    "type": "#ff7edb",
+    "constant": "#f97e72",
+    "comment": "#848bbd",
+    "success": "#72f1b8",
+    "info": "#03edf9",
+    "error": "#fe4450"
+  },
+  "terminal": {
+    "black": "#241b2f",
+    "red": "#fe4450",
+    "green": "#72f1b8",
+    "yellow": "#fede5d",
+    "blue": "#03edf9",
+    "magenta": "#ff7edb",
+    "cyan": "#36f9f6",
+    "white": "#ffffff"
+  },
+  "players": [
+    "#f97e72",
+    "#36f9f6",
+    "#ff7edb",
+    "#fede5d",
+    "#72f1b8",
+    "#03edf9",
+    "#ff8b39",
+    "#b893ce"
+  ],
+  "variants": {
+    "soft": {
+      "$comment": "Lower contrast - colors shifted lighter/more pastel",
+      "background.deep": "#2a2139",
+      "background.surface": "#2e2a3e",
+      "background.elevated": "#332e42",
+      "background.active": "#4e4570",
+      "foreground.primary": "#f0f0f0",
+      "border.default": "#5a5f8d",
+      "border.focused": "#9933aa",
+      "syntax.function": "#5af5f3",
+      "syntax.keyword": "#fee380",
+      "syntax.string": "#ffa15a",
+      "syntax.type": "#ff92e0",
+      "syntax.constant": "#fa9890",
+      "syntax.comment": "#848bbd",
+      "syntax.success": "#85f3c3",
+      "syntax.info": "#33f0fc",
+      "syntax.error": "#fe6670"
+    },
+    "high_contrast": {
+      "$comment": "Enhanced visibility - colors more saturated/vibrant",
+      "background.deep": "#1a1420",
+      "background.surface": "#1f1a2a",
+      "background.elevated": "#251f30",
+      "background.active": "#5a4b7a",
+      "foreground.primary": "#ffffff",
+      "border.default": "#6b74b8",
+      "border.focused": "#cc00cc",
+      "syntax.function": "#00f5f0",
+      "syntax.keyword": "#ffdc00",
+      "syntax.string": "#ff7700",
+      "syntax.type": "#ff6bd6",
+      "syntax.constant": "#ff6b5d",
+      "syntax.comment": "#9da5d5",
+      "syntax.success": "#5fffaf",
+      "syntax.info": "#00e5ff",
+      "syntax.error": "#ff2030"
+    }
+  }
+}
