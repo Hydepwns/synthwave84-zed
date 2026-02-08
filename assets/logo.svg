@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <defs>
+    <linearGradient id="sun" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f97e72"/>
+      <stop offset="50%" stop-color="#ff7edb"/>
+      <stop offset="100%" stop-color="#fede5d"/>
+    </linearGradient>
+  </defs>
+  <!-- Sun with scanlines -->
+  <circle cx="8" cy="10" r="6" fill="url(#sun)"/>
+  <!-- Horizon cutoff -->
+  <rect x="0" y="10" width="16" height="6" fill="#262335"/>
+  <!-- Scanlines through sun -->
+  <rect x="2" y="5" width="12" height="1" fill="#262335"/>
+  <rect x="2" y="7" width="12" height="0.8" fill="#262335"/>
+  <rect x="2" y="9" width="12" height="0.6" fill="#262335"/>
+  <!-- Grid lines below horizon -->
+  <line x1="0" y1="12" x2="16" y2="12" stroke="#ff7edb" stroke-width="0.3" opacity="0.6"/>
+  <line x1="0" y1="14" x2="16" y2="14" stroke="#ff7edb" stroke-width="0.3" opacity="0.4"/>
+</svg>
