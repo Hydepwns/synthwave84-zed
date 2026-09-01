@@ -49,9 +49,10 @@ jobs:
           node-version: '20'
 
       - name: Install ajv-cli
-        run: npm install -g ajv-cli ajv-formats
+        run: npm install -g ajv-cli@5 ajv-formats
 
       - name: Validate against Zed schema
         run: |
-          curl -sL https://zed.dev/schema/themes/v0.2.0.json -o /tmp/theme-schema.json
-          ajv validate -s /tmp/theme-schema.json -d themes/synthwave84.json --spec=draft2020 || echo "Schema validation completed"
+          curl -fsSL https://zed.dev/schema/themes/v0.2.0.json -o /tmp/theme-schema.json
+          ajv validate -s /tmp/theme-schema.json -d themes/synthwave84.json \
+            --spec=draft7 -c ajv-formats --all-errors
