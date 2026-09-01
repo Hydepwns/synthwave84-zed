@@ -17,7 +17,6 @@ from pathlib import Path
 from typing import Callable
 
 ROOT = Path(__file__).parent.parent
-VARIANT_KEYS = ("classic", "soft", "high_contrast")
 
 
 # --- Result Type ---
@@ -151,6 +150,20 @@ VARIANT_ADJUSTMENTS = {
 }
 
 
+def derivable_variants(palette: dict) -> list[str]:
+    """Variants produced by lightness-shifting the base palette.
+
+    Variants carrying a standalone palette (their own hues, not a shift of
+    Synthwave's) are excluded -- deriving them would overwrite their identity.
+    """
+    return [k for k in palette.get("variants", {}) if k in VARIANT_ADJUSTMENTS]
+
+
+def variant_background(palette: dict, variant: str) -> str:
+    default = palette["base"]["background"]["surface"]
+    return palette.get("variants", {}).get(variant, {}).get("background.surface", default)
+
+
 def derive_variant_color(base_color: str, bg_color: str, variant: str) -> str:
     """Derive a variant color from base, ensuring WCAG contrast."""
     if variant == "classic":
@@ -167,6 +180,11 @@ def derive_variant_color(base_color: str, bg_color: str, variant: str) -> str:
 # --- Color Resolution ---
 
 
+def variant_keys(base: dict) -> list[str]:
+    """Variant identifiers, in declaration order, from src/base.json."""
+    return [k for k in base["variants"] if not k.startswith("$")]
+
+
 def get_variant_colors(palette: dict, variant: str) -> dict:
     base = {
         **{f"background.{k}": v for k, v in palette["base"]["background"].items()},
@@ -175,10 +193,11 @@ def get_variant_colors(palette: dict, variant: str) -> dict:
         **{f"syntax.{k}": v for k, v in palette["syntax"].items() if not k.startswith("$")},
         **{f"terminal.{k}": v for k, v in palette["terminal"].items()},
     }
-    if variant != "classic":
-        overrides = palette.get("variants", {}).get(variant, {})
-        base = {**base, **{k: v for k, v in overrides.items() if not k.startswith("$")}}
-    return base
+    overrides = palette.get("variants", {}).get(variant, {})
+    color_overrides = {
+        k: v for k, v in overrides.items() if isinstance(v, str) and not k.startswith("$")
+    }
+    return {**base, **color_overrides}
 
 
 def resolve_template(template: str, colors: dict) -> str:
@@ -201,8 +220,28 @@ def resolve_value(value, colors: dict):
 # --- Generation ---
 
 
-def generate_players(palette: dict) -> list[dict]:
-    return [{"cursor": c, "background": c, "selection": f"{c}40"} for c in palette["players"]]
+def get_variant_players(palette: dict, variant: str) -> list[str]:
+    """Collaboration cursor colors, overridable per variant."""
+    overrides = palette.get("variants", {}).get(variant, {})
+    return overrides.get("players", palette["players"])
+
+
+def generate_players(colors: list[str]) -> list[dict]:
+    return [{"cursor": c, "background": c, "selection": f"{c}40"} for c in colors]
+
+
+# Zed's FontStyleContent enum. A syntax highlight style exposes only
+# background_color, color, font_style, and font_weight -- so "bold" is a weight
+# and "underline" has no representation at all.
+FONT_STYLES = frozenset({"normal", "italic", "oblique"})
+
+
+def style_attrs(style: str | None) -> dict:
+    """Map a syntax_styles group name onto Zed's font_style/font_weight fields."""
+    return {
+        "font_style": style if style in FONT_STYLES else None,
+        "font_weight": 700 if style == "bold" else None,
+    }
 
 
 def generate_syntax(base: dict, colors: dict) -> dict:
@@ -230,11 +269,7 @@ def generate_syntax(base: dict, colors: dict) -> dict:
     )
 
     syntax = {
-        token: {
-            "color": get_color(token),
-            "font_style": token_styles.get(token) if token_styles.get(token) != "normal" else "normal",
-            "font_weight": 700 if token_styles.get(token) == "bold" else None,
-        }
+        token: {"color": get_color(token), **style_attrs(token_styles.get(token))}
         for token in sorted(set(token_colors) | set(token_styles))
     }
 
@@ -271,7 +306,7 @@ def generate_variant(base: dict, palette: dict, variant_key: str) -> dict:
         "editor.line_number": f"{colors['foreground.primary']}{config['line_number_alpha']}",
         **ui,
         **terminal,
-        "players": generate_players(palette),
+        "players": generate_players(get_variant_players(palette, variant_key)),
         "syntax": syntax,
     }
 
@@ -283,7 +318,7 @@ def generate_theme(base: dict, palette: dict) -> dict:
         "$schema": base["$schema"],
         "name": base["name"],
         "author": base["author"],
-        "themes": [generate_variant(base, palette, k) for k in VARIANT_KEYS],
+        "themes": [generate_variant(base, palette, k) for k in variant_keys(base)],
     }
 
 
@@ -348,6 +383,55 @@ def validate_contrast(data: dict) -> list[Result]:
     return results
 
 
+SYNTAX_CONTRAST_FLOOR = 3.0  # syntax foregrounds stay legible, even below the AA text bar
+
+
+def token_styles_of(theme: dict) -> dict:
+    """Syntax entries that carry font styling, i.e. real tokens rather than the
+    background/border pseudo-entries from syntax_special."""
+    return {k: v for k, v in theme["style"]["syntax"].items() if "font_style" in v}
+
+
+def validate_font_styles(data: dict) -> list[Result]:
+    weights = {None, 100, 200, 300, 400, 500, 600, 700, 800, 900}
+    invalid = [
+        f"{t['name']}: {token} font_style '{v['font_style']}'"
+        for t in data.get("themes", [])
+        for token, v in token_styles_of(t).items()
+        if v["font_style"] is not None and v["font_style"] not in FONT_STYLES
+    ] + [
+        f"{t['name']}: {token} font_weight '{v['font_weight']}'"
+        for t in data.get("themes", [])
+        for token, v in token_styles_of(t).items()
+        if v.get("font_weight") not in weights
+    ]
+    return [Result.failure(e) for e in invalid[:10]] or [
+        Result.success("All font styles match Zed's schema")
+    ]
+
+
+def validate_syntax_contrast(data: dict) -> list[Result]:
+    results = []
+    for t in data.get("themes", []):
+        bg = t["style"].get("editor.background", t["style"].get("background"))
+        low = sorted(
+            (contrast_ratio(v["color"], bg), token)
+            for token, v in token_styles_of(t).items()
+            if v.get("color")
+        )
+        worst, token = low[0] if low else (None, None)
+        if worst is None:
+            continue
+        results.append(
+            Result.success(f"{t['name']} syntax floor {worst:.1f}:1 ({token})")
+            if worst >= SYNTAX_CONTRAST_FLOOR
+            else Result.failure(
+                f"{t['name']}: {token} contrast {worst:.1f}:1 < {SYNTAX_CONTRAST_FLOOR}:1"
+            )
+        )
+    return results
+
+
 def validate_players(data: dict) -> list[Result]:
     return [
         Result.success(f"{t['name']} has {len(p)} player colors")
@@ -355,6 +439,40 @@ def validate_players(data: dict) -> list[Result]:
         else Result.failure(f"{t['name']}: only {len(p)} players")
         for t in data.get("themes", [])
         for p in [t["style"].get("players", [])]
+    ]
+
+
+def validate_sources(base: dict, palette: dict) -> list[Result]:
+    """Check palette.json and src/base.json agree, before anything is generated.
+
+    A standalone variant that forgets an override silently inherits the Synthwave
+    base color -- correct for a derived variant, a bug for a standalone one.
+    """
+    buckets = {k for k in base["syntax_colors"] if not k.startswith("$")} - {"foreground"}
+    keys = {k for k in palette["syntax"] if not k.startswith("$")}
+
+    errors = [f"syntax_colors bucket '{b}' has no palette.syntax color" for b in sorted(buckets - keys)]
+    errors += [f"palette.syntax '{k}' is not mapped to any token" for k in sorted(keys - buckets)]
+    errors += [
+        f"variant '{v}' is declared in base.json but absent from palette.json"
+        for v in variant_keys(base)
+        if v != "classic" and v not in palette.get("variants", {})
+    ]
+
+    standalone = [
+        v
+        for v in variant_keys(base)
+        if v != "classic" and v not in VARIANT_ADJUSTMENTS and v in palette.get("variants", {})
+    ]
+    errors += [
+        f"standalone variant '{v}' inherits Synthwave {k} (no syntax.{k} override)"
+        for v in standalone
+        for k in sorted(keys)
+        if f"syntax.{k}" not in palette["variants"][v]
+    ]
+
+    return [Result.failure(e) for e in errors[:10]] or [
+        Result.success(f"Sources consistent ({len(keys)} palette keys, {len(standalone)} standalone)")
     ]
 
 
@@ -391,8 +509,17 @@ def cmd_validate() -> int:
     print("Validating theme...\n")
     data = load_theme()
 
-    validators = [validate_structure, validate_colors, validate_contrast, validate_players, validate_consistency]
+    validators = [
+        validate_structure,
+        validate_colors,
+        validate_contrast,
+        validate_syntax_contrast,
+        validate_font_styles,
+        validate_players,
+        validate_consistency,
+    ]
     results = [r for v in validators for r in v(data)]
+    results += validate_sources(load_base(), load_palette())
 
     for r in results:
         print(r.message)
@@ -428,13 +555,7 @@ def cmd_derive() -> int:
     """Show what colors would be derived programmatically vs current palette."""
     palette = load_palette()
     base_syntax = {k: v for k, v in palette["syntax"].items() if not k.startswith("$")}
-
-    # Background colors for each variant
-    backgrounds = {
-        "classic": palette["base"]["background"]["surface"],
-        "soft": palette["variants"]["soft"].get("background.surface", palette["base"]["background"]["surface"]),
-        "high_contrast": palette["variants"]["high_contrast"].get("background.surface", palette["base"]["background"]["surface"]),
-    }
+    variants = derivable_variants(palette)
 
     print("Derived vs Manual Colors (WCAG contrast in parentheses)")
     print("=" * 75)
@@ -442,8 +563,8 @@ def cmd_derive() -> int:
     print("-" * 75)
 
     for token, base_color in base_syntax.items():
-        for variant in ["soft", "high_contrast"]:
-            bg = backgrounds[variant]
+        for variant in variants:
+            bg = variant_background(palette, variant)
             derived = derive_variant_color(base_color, bg, variant)
 
             # Get manual color from palette
@@ -462,8 +583,8 @@ def cmd_derive() -> int:
 
     if len(sys.argv) > 2 and sys.argv[2] == "--apply":
         print("\nApplying derived colors...")
-        for variant in ["soft", "high_contrast"]:
-            bg = backgrounds[variant]
+        for variant in variants:
+            bg = variant_background(palette, variant)
             for token, base_color in base_syntax.items():
                 derived = derive_variant_color(base_color, bg, variant)
                 palette["variants"][variant][f"syntax.{token}"] = derived

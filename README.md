@@ -19,6 +19,7 @@ Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Ti
    - `"Synthwave84"` - Classic vibrant experience
    - `"Synthwave84 Soft"` - Lower contrast for extended coding
    - `"Synthwave84 High Contrast"` - Enhanced visibility
+   - `"Synthwave84 Delta"` - Pastel palette with yellow functions
 
 ![Theme Preview](assets/preview_synthwave84.png)
 ![Theme Preview](assets/preview_high_contrast.png)
@@ -33,10 +34,32 @@ Inspired by the music and cover artwork of modern Synthwave bands like FM-84, Ti
 - AI/LLM support for predictive text and inline completions
 - Language-specific optimizations for 15+ languages
 - Monaspace variable font support
-- Three theme variants:
+- Four theme variants:
   - **Synthwave84** - The classic vibrant synthwave experience
   - **Synthwave84 Soft** - Lower contrast for extended coding sessions
   - **Synthwave84 High Contrast** - Enhanced visibility with more vibrant colors
+  - **Synthwave84 Delta** - Softer pastel palette; functions yellow, keywords pink
+
+### Delta Variant
+
+Delta is a port of the `delta` scheme from
+[fluoromachine.nvim](https://github.com/maxmx03/fluoromachine.nvim) by maxmx03 (MIT),
+added by request in [#1](https://github.com/hydepwns/synthwave84-zed/issues/1). Unlike
+Soft and High Contrast -- which are lightness shifts of the Synthwave base -- Delta
+carries its own palette and reassigns which hue means what:
+
+| Token    | Synthwave | Delta     |
+| -------- | --------- | --------- |
+| Function | Cyan      | Yellow    |
+| Keyword  | Yellow    | Pink      |
+| String   | Orange    | Purple    |
+| Type     | Pink      | Green     |
+| Number   | Coral     | Cyan      |
+| Variable | Pink      | Foreground|
+
+Two deliberate deviations from upstream: the comment color is lifted from `#925393`
+to `#a562a6` (2.81:1 fails this repo's 3.0 contrast gate; the port sits at 3.55:1),
+and markdown bold/italic share one orange rather than splitting orange/red.
 
 ### Terminal Support
 
@@ -149,7 +172,7 @@ See [COLORS.md](COLORS.md) for the complete color palette reference.
 
 ### Theme not appearing in Zed
 
-- Ensure you're using the exact theme names: `"Synthwave84"`, `"Synthwave84 Soft"`, `"Synthwave84 High Contrast"`
+- Ensure you're using the exact theme names: `"Synthwave84"`, `"Synthwave84 Soft"`, `"Synthwave84 High Contrast"`, `"Synthwave84 Delta"`
 - Restart Zed after installation
 - Check that the extension is enabled in Extensions panel
 
